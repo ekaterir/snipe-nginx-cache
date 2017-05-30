@@ -20,5 +20,6 @@ class FastCGI_Cache_Page_Purge {
     require_once plugin_dir_path( __FILE__ ) . 'includes/activator.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/deactivator.php';
     require_once plugin_dir_path( __FILE__ ) . 'includes/cache_purge.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/filesystem_helper.php'; 
   } 
 }
