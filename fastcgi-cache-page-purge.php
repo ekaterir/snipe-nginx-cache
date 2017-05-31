@@ -1,8 +1,7 @@
 <?php
 /**
  * Plugin Name: FastCGI Cache Page Purge
- * Plugin URI: ###
- * Description: ###
+ * Description: Purge the Nginx FastCGI Cache within WordPress on a global or per-page basis.
  * Version: 1.0.0
  * Author: Thorn Technologies LLC
  * License: MIT
