@@ -68,7 +68,7 @@ class Settings_Manager {
 				</th>
 				<td>
 					<input type="text" class="regular-text code" name="fastcgi_cache_path" placeholder="/data/nginx/cache" value="$cache_path_value" />
-					<p class="description">The absolute path to the location of the cache zone, specified in the Nginx <code>fastcgi_cache_path</code> or <code>proxy_cache_path</code> directive.</p>
+					<p class="description">The absolute path to the location of the cache zone, specified in the Nginx <code>fastcgi_cache_path</code>.</p>
 				</td>
 			</tr>
  		</tbody>

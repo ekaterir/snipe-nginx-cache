@@ -6,7 +6,7 @@
 
     function modify_list_row_actions( $actions, $post ) {
 	$actions = array_merge( $actions, [
-		'cache_purge' => sprintf( '<a href="#" class="cache-purge-inline" id="%1$d">%2$s</a>', $post->ID, esc_html( __( 'Cache Purge' ) ) )
+		'cache_purge' => sprintf( '<a href="#" class="cache-purge-inline" id="%1$d">%2$s</a>', $post->ID, esc_html( __( 'Purge cache for this page' ) ) )
 	]); 
         return $actions;
     }
