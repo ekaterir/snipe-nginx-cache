@@ -1,7 +1,7 @@
 <?php
     add_filter( 'post_row_actions', 'modify_list_row_actions', 10, 2 );
     add_filter( 'page_row_actions', 'modify_list_row_actions', 10 ,2 );
-    add_action( 'admin_enqueue_scripts', 'load_toolbar_js' );
+    add_action( 'admin_enqueue_scripts', 'load_row_actions_js' );
     add_action( 'wp_ajax_delete_current_page_cache', 'delete_current_page_cache' );
 
     function modify_list_row_actions( $actions, $post ) {
@@ -11,7 +11,7 @@
         return $actions;
     }
     
-    function load_toolbar_js() {
+    function load_row_actions_js() {
         wp_enqueue_script("fastcgi-cache", plugins_url("fastcgi-cache-page-purge/js/row_actions.js"), array(), time(), true); 
     }
 

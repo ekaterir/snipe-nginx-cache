@@ -40,6 +40,10 @@ class Filesystem_Helper {
     return;
   }
 
+  public static function delete_cache( $path ) {
+    self::delete_directory( $path, '', true );
+  }
+
   public static function delete_directory( $path, $permalink, $recursive = false ) {
     if (!$path)
 	return false;

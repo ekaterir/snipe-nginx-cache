@@ -18,5 +18,6 @@ class FastCGI_Cache_Page_Purge {
     require_once plugin_dir_path( __FILE__ ) . 'includes/filesystem_helper.php'; 
     require_once plugin_dir_path( __FILE__ ) . 'includes/settings_manager.php'; 
     require_once plugin_dir_path( __FILE__ ) . 'includes/row_actions.php';
+    require_once plugin_dir_path( __FILE__ ) . 'includes/admin_toolbar.php';
   } 
 }
