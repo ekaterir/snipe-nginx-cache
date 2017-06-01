@@ -16,7 +16,7 @@
 					cache: false,
 					success: function(data){
 					    if (data[0] == true) {
-                              		        target.innerHTML = 'Entire cache was purged';
+                              		        e.target.innerHTML = 'Entire cache was purged';
                                                 jQuery('#the-list a.cache-purge-inline').each(function(){
                                                     jQuery(this).context.outerHTML = '<span>Cache Purged</span>';
                                                 });
