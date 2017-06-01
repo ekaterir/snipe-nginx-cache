@@ -9,7 +9,9 @@
 				dataType : "json",
 				cache: false,
 				success: function(data){
-					console.log(data);
+				    if ( data[0] === true ) {
+                                        e.target.outerHTML = '<span>Cache Purged</span>';
+                                    }
 				}
 			});
                 });
