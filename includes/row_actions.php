@@ -20,7 +20,12 @@
 	  if ( $_GET["post"] ) {
 	      $permalink = get_permalink( $_GET['post'] );
 	      $path = get_option( 'fastcgi_cache_path' );
-	      $directory_deleted = Filesystem_Helper::delete_directory($path, $permalink, true);
+	      try {
+		  $filesystem = Filesystem_Helper::get_instance();
+	          $directory_deleted = $filesystem->delete_directory($path, $permalink, true);
+	      } catch (\Exception $e) {
+	      	  die(json_encode(['error' => $e->getMessage()]));
+	      }
 	      die(json_encode([$directory_deleted]));
 	  }    
       }
