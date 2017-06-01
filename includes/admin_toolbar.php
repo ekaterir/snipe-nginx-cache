@@ -24,8 +24,8 @@
 	));
 
 	$wp_admin_bar->add_menu( array(
-		'id'    => 'delete_entire_cache',
-		'title' => 'Purge Entire Cache',
+                'id'    => $id,
+                'title' => $title,
 		'parent'=> 'fastcgi_cache'
 	));
     }
