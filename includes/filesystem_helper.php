@@ -39,9 +39,6 @@ class Filesystem_Helper {
 	if ( ! $wp_filesystem->exists( $path ) ) {
 	     return false;
 	}
-	if ( ! $wp_filesystem->is_dir( $path ) ) {
-	     return false;
-	}
 	if ( ! $wp_filesystem->is_writable( $path ) ) {
 	     return false;
 	}
