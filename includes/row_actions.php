@@ -7,6 +7,7 @@
     function modify_list_row_actions( $actions, $post ) {
         $new_action = '';
         $filesystem = Filesystem_Helper::get_instance();
+	$filesystem->set_path(get_option( 'fastcgi_cache_path' ));
 	$permalink = get_permalink( $post );
         $cache_path = $filesystem->get_nginx_cache_path( $permalink );
         if ( $filesystem->is_valid_path( $cache_path ) ) {
