@@ -29,7 +29,7 @@ class Filesystem_Helper {
     return true;
   }
 
-  private function is_valid_path( $path ) {
+  public function is_valid_path( $path ) {
     global $wp_filesystem;
 
     if ( empty( $path ) ) {
@@ -47,7 +47,7 @@ class Filesystem_Helper {
     return false;
   }
 
-  private function set_path( $path ) {
+  public function set_path( $path ) {
     if (!$path)
 	return;
     
@@ -70,7 +70,7 @@ class Filesystem_Helper {
     return false;
   }
 
-  private function get_nginx_cache_path ( $permalink ) {
+  public function get_nginx_cache_path ( $permalink ) {
         if ( ! $permalink ) {
 	    return $this->path;
 	}

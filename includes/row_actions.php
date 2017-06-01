@@ -5,8 +5,17 @@
     add_action( 'wp_ajax_delete_current_page_cache', 'delete_current_page_cache' );
 
     function modify_list_row_actions( $actions, $post ) {
+        $new_action = '';
+        $filesystem = Filesystem_Helper::get_instance();
+	$permalink = get_permalink( $post );
+        $cache_path = $filesystem->get_nginx_cache_path( $permalink );
+        if ( $filesystem->is_valid_path( $cache_path ) ) {
+	    $new_action = sprintf( '<a href="#" class="cache-purge-inline" id="%1$d">%2$s</a>', $post->ID, esc_html( __( 'Purge cache for this page' ) ) );
+        } else {
+	    $new_action = sprintf( '<span>%1$s</span>', esc_html( __( 'Cache purged' ) ) );
+        }
 	$actions = array_merge( $actions, [
-		'cache_purge' => sprintf( '<a href="#" class="cache-purge-inline" id="%1$d">%2$s</a>', $post->ID, esc_html( __( 'Purge cache for this page' ) ) )
+		'cache_purge' => $new_action
 	]); 
         return $actions;
     }
