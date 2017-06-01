@@ -33,7 +33,7 @@ class Filesystem_Helper {
     global $wp_filesystem;
 
     if ( empty( $path ) ) {
-	return new WP_Error( 'empty', __( '"Cache Zone Path" is not set.', 'nginx-cache' ) );
+	return false;
     }
     if ( $this->initialize_filesystem() ) {
 	if ( ! $wp_filesystem->exists( $path ) ) {

@@ -5,8 +5,18 @@
     add_action( 'wp_ajax_delete_entire_cache', 'delete_entire_cache' );
 
     function fastcgi_cache_tweaked_admin_bar() {
-
 	global $wp_admin_bar;
+        $title = '';
+        $id = '';
+        $filesystem = Filesystem_Helper::get_instance();
+        $filesystem->set_path(get_option('fastcgi_cache_path'));
+        if ( $filesystem->is_valid_path( get_option( 'fastcgi_cache_path' ) ) ) {
+           $title = 'Purge Entire Cache';
+           $id = 'delete_entire_cache';
+        } else {
+           $title = 'Entire cache was purged';
+           $id = 'no_cache';
+        }
 
 	$wp_admin_bar->add_node(array(
 		'id'    => 'fastcgi_cache',
