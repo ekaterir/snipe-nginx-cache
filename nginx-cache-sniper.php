@@ -18,6 +18,7 @@ class Nginx_Cache_Sniper {
   private $plugin_name = 'nginx-cache-sniper';
 
   public function __construct() {
+    add_action( 'admin_enqueue_scripts', [ $this, 'load_cache_actions_js' ] );
     require_once plugin_dir_path( __FILE__ ) . 'includes/filesystem_helper.php'; 
     require_once plugin_dir_path( __FILE__ ) . 'includes/options.php'; 
     require_once plugin_dir_path( __FILE__ ) . 'includes/row_actions.php';
@@ -28,4 +29,9 @@ class Nginx_Cache_Sniper {
   public function get_plugin_name() {
     return $this->plugin_name;
   }
+
+  public function load_cache_actions_js() {
+    wp_enqueue_script("nginx-cache-sniper_cache_actions", plugins_url("nginx-cache-sniper/js/cache_actions.js"), [], time(), true); 
+  }
+
 }

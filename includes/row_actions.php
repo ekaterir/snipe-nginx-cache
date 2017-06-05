@@ -19,11 +19,6 @@
     add_filter( 'post_row_actions', 'modify_list_row_actions', 10, 2 );
     add_filter( 'page_row_actions', 'modify_list_row_actions', 10 ,2 );
     
-    function load_row_actions_js() {
-        wp_enqueue_script("nginx-cache-sniper_row_actions", plugins_url("nginx-cache-sniper/js/row_actions.js"), [], time(), true); 
-    }
-    add_action( 'admin_enqueue_scripts', 'load_row_actions_js' );
-
     function delete_current_page_cache() {
       if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
 	  if ( $_GET["post"] ) {

@@ -31,7 +31,7 @@ class Filesystem_Helper {
 
   public function is_valid_path( $path ) {
     global $wp_filesystem;
-//var_dump($path);
+
     if ( empty( $path ) ) {
 	return false;
     }
