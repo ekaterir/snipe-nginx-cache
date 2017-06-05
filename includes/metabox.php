@@ -1,24 +1,24 @@
 <?php
 /**
- * Register meta box(es).
+ * Register metabox.
  */
-function fastcgi_cache_register_meta_boxes() {
+function nginx_cache_sniper_register_metabox() {
     add_meta_box(
-    'fastcgi_cache_metabox',
+    'nginx_cache_sniper_metabox',
   __( 'Cache Purge' ),
-  'fastcgi_cache_render_metabox',
+  'nginx_cache_sniper_render_metabox',
   ['post', 'page'],
   'side',
   'low'
     );
 }
-add_action( 'add_meta_boxes', 'fastcgi_cache_register_meta_boxes' );
 /**
+ * Render metabox.
  */
-function fastcgi_cache_render_metabox( $post ) {
+function nginx_cache_sniper_render_metabox( $post ) {
         $new_action = '';
         $filesystem = Filesystem_Helper::get_instance();
-	$filesystem->set_path(get_option( 'fastcgi_cache_path' ));
+	$filesystem->set_path(get_option( 'nginx_cache_sniper_path' ));
 	$permalink = get_permalink( $post );
         $cache_path = $filesystem->get_nginx_cache_path( $permalink );
         if ( $filesystem->is_valid_path( $cache_path ) ) {
@@ -28,3 +28,5 @@ function fastcgi_cache_render_metabox( $post ) {
         }
   echo '<p>' . $new_action . '</p>';
 }
+add_action( 'add_meta_boxes', 'nginx_cache_sniper_register_metabox' );
+
