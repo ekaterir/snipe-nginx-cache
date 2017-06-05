@@ -26,12 +26,7 @@
 		'parent'=> 'fastcgi_cache'
 	));
     }
-    add_action( 'wp_before_admin_bar_render', 'nginx_cache_sniper_tweaked_admin_bar' );
- 
-    function load_admin_bar_js() {
-        wp_enqueue_script("nginx-cache-sniper_admin_bar", plugins_url("nginx-cache-sniper/js/admin_bar.js"), [], time(), true); 
-    }
-    add_action( 'admin_enqueue_scripts', 'load_admin_bar_js' );
+    add_action( 'wp_before_admin_bar_render', 'nginx_cache_sniper_tweaked_admin_bar' ); 
 
     function delete_entire_cache() { 
 	      $path = get_option( 'nginx_cache_sniper_path' );

@@ -30,7 +30,3 @@ function nginx_cache_sniper_render_metabox( $post ) {
 }
 add_action( 'add_meta_boxes', 'nginx_cache_sniper_register_metabox' );
 
-    function load_metabox_js() {
-        wp_enqueue_script("nginx-cache-sniper_metabox", plugins_url("nginx-cache-sniper/js/metabox.js"), [], time(), true); 
-    }
-    add_action( 'admin_enqueue_scripts', 'load_metabox_js' );
