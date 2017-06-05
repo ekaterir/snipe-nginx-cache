@@ -1,13 +1,9 @@
 <?php
-    add_filter( 'post_row_actions', 'modify_list_row_actions', 10, 2 );
-    add_filter( 'page_row_actions', 'modify_list_row_actions', 10 ,2 );
-    add_action( 'admin_enqueue_scripts', 'load_row_actions_js' );
-    add_action( 'wp_ajax_delete_current_page_cache', 'delete_current_page_cache' );
 
     function modify_list_row_actions( $actions, $post ) {
         $new_action = '';
         $filesystem = Filesystem_Helper::get_instance();
-	$filesystem->set_path(get_option( 'fastcgi_cache_path' ));
+	$filesystem->set_path(get_option( 'nginx_cache_sniper_path' ));
 	$permalink = get_permalink( $post );
         $cache_path = $filesystem->get_nginx_cache_path( $permalink );
         if ( $filesystem->is_valid_path( $cache_path ) ) {
@@ -20,21 +16,25 @@
 	]); 
         return $actions;
     }
+    add_filter( 'post_row_actions', 'modify_list_row_actions', 10, 2 );
+    add_filter( 'page_row_actions', 'modify_list_row_actions', 10 ,2 );
     
     function load_row_actions_js() {
-        wp_enqueue_script("fastcgi-cache", plugins_url("fastcgi-cache-page-purge/js/row_actions.js"), array(), time(), true); 
+        wp_enqueue_script("nginx-cache-sniper_row_actions", plugins_url("nginx-cache-sniper/js/row_actions.js"), [], time(), true); 
     }
+    add_action( 'admin_enqueue_scripts', 'load_row_actions_js' );
 
     function delete_current_page_cache() {
       if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
 	  if ( $_GET["post"] ) {
 	      $permalink = get_permalink( $_GET['post'] );
-	      $path = get_option( 'fastcgi_cache_path' );
+	      $path = get_option( 'nginx_cache_sniper_path' );
 	      $filesystem = Filesystem_Helper::get_instance();
 	      $directory_deleted = $filesystem->delete_directory($path, $permalink, true);
 	      die(json_encode([$directory_deleted]));
 	  }    
       }
     }
+    add_action( 'wp_ajax_delete_current_page_cache', 'delete_current_page_cache' );
 
 

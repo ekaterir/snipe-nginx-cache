@@ -1,5 +1,5 @@
         jQuery( document ).ready(function() {
-		jQuery('#the-list').on( 'click', 'a.cache-purge-inline', function( e ) {
+		jQuery('#nginx_cache_sniper_metabox').on( 'click', 'a.cache-purge-inline', function( e ) {
                         e.preventDefault();
 			var post_id = e.target.id;
 			jQuery.ajax({
@@ -9,7 +9,6 @@
 				dataType : "json",
 				cache: false,
 				success: function(data){
-				    console.log('do I end up here?');
 				    if ( data[0] === true ) {
                                         e.target.outerHTML = '<span>Cache Purged</span>';
                                     }
