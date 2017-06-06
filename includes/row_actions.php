@@ -2,10 +2,10 @@
 
     function modify_list_row_actions( $actions, $post ) {
         $new_action = '';
-        $filesystem = Filesystem_Helper::get_instance();
-	$filesystem->set_path(get_option( 'nginx_cache_sniper_path' ));
+	$filesystem = Filesystem_Helper::get_instance();
+	$cache_zone_path = get_option( 'nginx_cache_sniper_path' );
 	$permalink = get_permalink( $post );
-        $cache_path = $filesystem->get_nginx_cache_path( $permalink );
+        $cache_path = $filesystem->get_nginx_cache_path( $cache_zone_path, $permalink );
         if ( $filesystem->is_valid_path( $cache_path ) ) {
 	    $new_action = sprintf( '<a href="#" class="cache-purge-inline" id="%1$d">%2$s</a>', $post->ID, esc_html( __( 'Purge cache for this page' ) ) );
         } else {
@@ -25,7 +25,8 @@
 	      $permalink = get_permalink( $_GET['post'] );
 	      $path = get_option( 'nginx_cache_sniper_path' );
 	      $filesystem = Filesystem_Helper::get_instance();
-	      $directory_deleted = $filesystem->delete_directory($path, $permalink, true);
+              $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+	      $directory_deleted = $filesystem->delete( $cache_path );
 	      die(json_encode([$directory_deleted]));
 	  }    
       }
