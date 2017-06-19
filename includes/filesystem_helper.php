@@ -28,9 +28,8 @@ class Filesystem_Helper {
    */
   public function initialize_filesystem( $path ) {
     if ( !is_dir( $path ) ) {
-      
+        $path = dirname($path);  
     }
-    // $path = get_option( 'nginx_cache_sniper_path' );
     ob_start();
     $credentials = request_filesystem_credentials( '', '', false, $path, null, true );
     $data = ob_get_clean();
