@@ -9,7 +9,7 @@ function delete_current_page(e) {
 		cache: false,
 		success: function(data){
 		    if ( data[0] === true ) {
-			e.target.outerHTML = '<span>Cache Purged</span>';
+			e.target.outerHTML = '<span>Cache Sniped</span>';
 		    }
 		}
 	}); 
@@ -34,7 +34,7 @@ function delete_entire_cache(e) {
 			    if (data[0] == true) {
 				e.target.innerHTML = 'Entire cache was purged';
 				jQuery('#the-list a.cache-purge-inline').each(function(){
-				    jQuery(this).context.outerHTML = '<span>Cache Purged</span>';
+				    jQuery(this).context.outerHTML = '<span>Entire Cache Purged</span>';
 				});
 			   }
 			}
