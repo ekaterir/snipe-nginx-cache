@@ -114,4 +114,3 @@ class Filesystem_Helper {
   }
 }
 
-Filesystem_Helper::get_instance();

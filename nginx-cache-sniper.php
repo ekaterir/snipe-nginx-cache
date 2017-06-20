@@ -6,7 +6,6 @@
  * Author: Thorn Technologies LLC
  * License: MIT
  */
-
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 if ( is_admin() ) {
@@ -16,7 +15,8 @@ if ( is_admin() ) {
 class Nginx_Cache_Sniper {
 
   private $plugin_name = 'nginx-cache-sniper';
-  private $cache_path_setting = 'nginx_cache_sniper_path';
+  private $cache_path_setting = 'nginx_cache_sniper_path';  
+  private $cache_clear_on_update_setting = 'nginx_cache_sniper_auto_clear';
 
   public function __construct() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/filesystem_helper.php'; 
@@ -25,17 +25,23 @@ class Nginx_Cache_Sniper {
     add_action( 'admin_init', [ $this, 'register_nginx_cache_sniper_settings' ] );
     add_action( 'admin_menu', [ $this, 'create_tools_page' ] );
     add_action( 'wp_before_admin_bar_render', [ $this, 'nginx_cache_sniper_tweaked_admin_bar' ] ); 
-    require_once plugin_dir_path( __FILE__ ) . 'includes/row_actions.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/admin_toolbar.php';
-    require_once plugin_dir_path( __FILE__ ) . 'includes/metabox.php';
+    add_filter( 'post_row_actions', [ $this, 'modify_list_row_actions' ], 10, 2 );
+    add_filter( 'page_row_actions', [ $this, 'modify_list_row_actions' ], 10 ,2 );
+    add_action( 'add_meta_boxes', [ $this, 'nginx_cache_sniper_register_metabox' ] );
+    add_action( 'wp_ajax_delete_entire_cache', [ $this, 'delete_entire_cache' ] );
+    add_action( 'wp_ajax_delete_current_page_cache', [ $this, 'delete_current_page_cache' ] );
   } 
- 
+
   public function get_plugin_name() {
     return $this->plugin_name;
   }
   
   public function get_cache_path_setting() {
     return $this->cache_path_setting;
+  }
+ 
+  public function get_cache_clear_on_update_setting() {
+    return $this->cache_clear_on_update_setting;
   }
 
   /**
@@ -50,6 +56,7 @@ class Nginx_Cache_Sniper {
    */
   public function register_nginx_cache_sniper_settings() {
     register_setting( $this->get_plugin_name(), $this->get_cache_path_setting(), 'sanitize_text_field' );
+    register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_update_setting(), 'absint' );
   }
 
   /**
@@ -63,58 +70,74 @@ class Nginx_Cache_Sniper {
    * Build the form on the tools page.
    */
   function build_form() {
-    $cache_path_setting = $this->get_cache_path_setting();
-    $cache_path_value = esc_attr( get_option( $cache_path_setting ));
-    $render_plugin_name = Render_Helper::PLUGIN_NAME; 
-    echo '<form class="form-table" method="post" action="options.php">';
-    settings_fields( $this->get_plugin_name() );
-    echo <<<EOT
-    <div class="wrap">
-      <h2>$render_plugin_name</h2>
-        <table class="form-table">
-	  <tbody>
-	    <tr>
-	      <th scope="row">
-	        Cache Path
-	      </th>
-	      <td>
-	        <input type="text" class="regular-text code" name="$cache_path_setting" placeholder="/data/nginx/cache" value="$cache_path_value" />
-	        <p class="description">The absolute path to the location of the cache zone, specified in the Nginx <code>fastcgi_cache_path</code>.</p>
-	      </td>
-	    </tr>
-	  </tbody>
-        </table>
-EOT;
-    submit_button();
-    echo '</form></div>';
+    $render = Render_Helper::get_instance();
+    $render->settings_form();
   }
 
   /**
    * Add menu to the admin toolbar.
    */
   function nginx_cache_sniper_tweaked_admin_bar() {
-    global $wp_admin_bar;
-    $title = '';
-    $id = '';
+    $render = Render_Helper::get_instance();
+    $render->admin_bar();
+  }
+
+  /**
+   * Register metabox.
+   */
+  public function nginx_cache_sniper_register_metabox() {
+    add_meta_box(
+      'nginx_cache_sniper_metabox',
+      Render_Helper::PLUGIN_NAME,
+      [ $this, 'nginx_cache_sniper_render_metabox' ],
+      ['post', 'page'],
+      'side',
+      'low'
+    );
+  }
+
+  /**
+   * Render metabox.
+   */
+  public function nginx_cache_sniper_render_metabox( $post ) {
+    $render = Render_Helper::get_instance();
+    echo '<p>' . $render->delete_current_page( $post )  . '</p>';
+  }
+
+  /**
+   * Add an action to the list of posts and pages.
+   */
+  public function modify_list_row_actions( $actions, $post ) {
+    $render = Render_Helper::get_instance();
+    $actions = array_merge( $actions, [
+      'cache_purge' => $render->delete_current_page( $post )
+    ]); 
+    return $actions;
+  }
+
+  /**
+   * Delete entire cache.
+   */
+  public function delete_entire_cache() { 
+    $path = get_option( $this->get_cache_path_setting() );
     $filesystem = Filesystem_Helper::get_instance();
-    $cache_path = $filesystem->get_nginx_cache_path( get_option( $this->get_cache_path_setting() ), '' );
-    if ( $filesystem->is_valid_path( $cache_path ) ) {
-      $title = Render_Helper::CLEAR_ENTIRE_CACHE;
-      $id = 'delete_entire_cache';
-    } else {
-      $title = Render_Helper::ENTIRE_CACHE_CLEARED;
-      $id = 'no_cache';
+    $cache_deleted = $filesystem->delete( $path, true );
+    die(json_encode([$cache_deleted]));
+  }
+
+  /**
+   * Delete current page cache.
+   */
+  function delete_current_page_cache() {
+    if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
+      if ( $_GET["post"] ) {
+        $permalink = get_permalink( $_GET['post'] );
+        $path = get_option( $this->get_cache_path_setting() );
+        $filesystem = Filesystem_Helper::get_instance();
+        $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+        $directory_deleted = $filesystem->delete( $cache_path );
+        die(json_encode([$directory_deleted]));
+      }
     }
-
-    $wp_admin_bar->add_node([
-      'id'    => 'fastcgi_cache',
-      'title' => Render_Helper::PLUGIN_NAME
-    ]);
-
-    $wp_admin_bar->add_menu([
-      'id'    => $id,
-      'title' => $title,
-      'parent'=> 'fastcgi_cache'
-    ]);
   }
 }
