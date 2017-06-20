@@ -32,9 +32,9 @@ function delete_entire_cache(e) {
 			cache: false,
 			success: function(data){
 			    if (data[0] == true) {
-				e.target.innerHTML = 'Entire cache was purged';
+				e.target.innerHTML = 'Entire cache was cleared';
 				jQuery('#the-list a.cache-purge-inline').each(function(){
-				    jQuery(this).context.outerHTML = '<span>Entire Cache Purged</span>';
+				    jQuery(this).context.outerHTML = '<span>Entire cache cleared</span>';
 				});
 			   }
 			}

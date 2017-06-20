@@ -30,6 +30,7 @@ class Nginx_Cache_Sniper {
     add_action( 'add_meta_boxes', [ $this, 'nginx_cache_sniper_register_metabox' ] );
     add_action( 'wp_ajax_delete_entire_cache', [ $this, 'delete_entire_cache' ] );
     add_action( 'wp_ajax_delete_current_page_cache', [ $this, 'delete_current_page_cache' ] );
+    add_action( 'save_post', [ $this, 'delete_current_page_cache_on_update' ] );
   } 
 
   public function get_plugin_name() {
@@ -128,16 +129,35 @@ class Nginx_Cache_Sniper {
   /**
    * Delete current page cache.
    */
-  function delete_current_page_cache() {
-    if ( $_SERVER['REQUEST_METHOD'] === 'GET' ) {
-      if ( $_GET["post"] ) {
-        $permalink = get_permalink( $_GET['post'] );
-        $path = get_option( $this->get_cache_path_setting() );
-        $filesystem = Filesystem_Helper::get_instance();
-        $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
-        $directory_deleted = $filesystem->delete( $cache_path );
-        die(json_encode([$directory_deleted]));
-      }
+  public function delete_current_page_cache() {
+    if ( isset($_GET["post"]) ) {
+      $permalink = get_permalink( $_GET['post'] );
+    } else {
+      die(json_encode(['error' => 'Page/post was not supplied']));
     }
+    $path = get_option( $this->get_cache_path_setting() );
+    $filesystem = Filesystem_Helper::get_instance();
+    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+    $directory_deleted = $filesystem->delete( $cache_path );
+    die(json_encode([$directory_deleted]));
   }
+
+  /**
+   * Delete cache on page/post update.
+   */
+  public function delete_current_page_cache_on_update( $post_id ) {
+    // If this is just a revision, don't clear cache.
+    if ( wp_is_post_revision( $post_id ) )
+      return;
+
+    if ( get_option( $this->get_cache_clear_on_update_setting() ) != 1 )
+      return;
+
+    $permalink = get_permalink( $post_id );
+    $path = get_option( $this->get_cache_path_setting() );
+    $filesystem = Filesystem_Helper::get_instance();
+    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+    $filesystem->delete( $cache_path );
+  }
+
 }
