@@ -1,4 +1,4 @@
-=== Nginx Cache Sniper ===
+=== Cache Sniper for Nginx ===
 Contributors: ekaterir, robertchen617, djrusk
 Tags: cache, caching, invalidation, nginx, aws, amazon web services, apache, nginx, purge, flush, server, fastcgi, php, fpm, php-fpm, snipe, individual, page
 Requires at least: 4.6
@@ -11,7 +11,7 @@ Purge the Nginx FastCGI cache manually, or automatically when content is updated
 
 == Description ==
 
-Nginx has a built-in FastCGI cache, which acts as a reverse proxy cache at the webserver layer. The Nginx Cache Sniper WordPress plugin lets you purge this cache from within WordPress. Here are some key features:
+Nginx has a built-in FastCGI cache, which acts as a reverse proxy cache at the webserver layer. The Cache Sniper for Nginx WordPress plugin lets you purge this cache from within WordPress. Here are some key features:
 
 * Purge the entire cache from the menu bar
 * Manually purge individual pages
@@ -22,7 +22,7 @@ For more info on using this plugin with a pre-configured Nginx stack running in 
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/nginx-cache-sniper` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/cache-sniper-nginx` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the **Plugins** screen in WordPress
 1. Go to **Tools** -> **Nginx Cache Sniper** to configure the plugin
 
@@ -34,16 +34,16 @@ For more info on using this plugin with a pre-configured Nginx stack running in 
 
 **Configuration Settings**
 
-Nginx Cache Sniper comes with two settings:
+Cache Sniper for Nginx comes with two settings:
 
 1. **Cache Path**: This is the filesystem path where the FastCGI cache is stored on-disk. Set this to the value you used for `fastcgi_cache_path` from your Nginx configuration. **Note**: Nginx needs read/write access to this location.
 1. **Automatically clear cache on content update**: Check this box to automatically purge the cache when updated. This only purges the updated page -- it does not clear the entire cache.
 
 **Configuration via WP CLI**
 
-For those scripting out infrastructure, Nginx Cache Sniper can be configured via WP CLI:
+For those scripting out infrastructure, Cache Sniper for Nginx can be configured via WP CLI:
 
-1. `wp plugin activate nginx-cache-sniper`
+1. `wp plugin activate cache-sniper-nginx`
 1. `wp option add nginx_cache_sniper_path '/var/lib/nginx/cache'`
 1. `wp option add nginx_cache_sniper_auto_clear 1`
 
@@ -60,7 +60,7 @@ There are a few things that need to be configured on the server in order for thi
 
 = Do I need to recompile Nginx to purge the cache? =
 
-No. Nginx Cache Sniper works without relying on any custom Nginx modules. This means you can easily keep Nginx updated with your normal package manager. 
+No. Cache Sniper for Nginx works without relying on any custom Nginx modules. This means you can easily keep Nginx updated with your normal package manager. 
 
 == Screenshots ==
 

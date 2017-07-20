@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Nginx Cache Sniper
+ * Plugin Name: Cache Sniper for Nginx
  * Description: Purge the Nginx FastCGI Cache within WordPress on a global or per-page basis.
  * Version: 1.0.0
  * Author: Thorn Technologies LLC
@@ -9,28 +9,28 @@
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 if ( is_admin() ) {
-  new Nginx_Cache_Sniper();
+  new Cache_Sniper_Nginx();
 }
 
-class Nginx_Cache_Sniper {
+class Cache_Sniper_Nginx {
 
-  private $plugin_name = 'nginx-cache-sniper';
+  private $plugin_name = 'cache-sniper-nginx';
   private $cache_path_setting = 'nginx_cache_sniper_path';  
   private $cache_clear_on_update_setting = 'nginx_cache_sniper_auto_clear';
 
   public function __construct() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/filesystem_helper.php'; 
     require_once plugin_dir_path( __FILE__ ) . 'includes/render_helper.php';
-    add_action( 'admin_enqueue_scripts', [ $this, 'load_cache_actions_js' ] );
-    add_action( 'admin_init', [ $this, 'register_nginx_cache_sniper_settings' ] );
-    add_action( 'admin_menu', [ $this, 'create_tools_page' ] );
-    add_action( 'wp_before_admin_bar_render', [ $this, 'nginx_cache_sniper_tweaked_admin_bar' ] ); 
-    add_filter( 'post_row_actions', [ $this, 'modify_list_row_actions' ], 10, 2 );
-    add_filter( 'page_row_actions', [ $this, 'modify_list_row_actions' ], 10 ,2 );
-    add_action( 'add_meta_boxes', [ $this, 'nginx_cache_sniper_register_metabox' ] );
-    add_action( 'wp_ajax_delete_entire_cache', [ $this, 'delete_entire_cache' ] );
-    add_action( 'wp_ajax_delete_current_page_cache', [ $this, 'delete_current_page_cache' ] );
-    add_action( 'save_post', [ $this, 'delete_current_page_cache_on_update' ] );
+    add_action( 'admin_enqueue_scripts', [ $this, 'csnx_load_actions_js' ] );
+    add_action( 'admin_init', [ $this, 'csnx_register_settings' ] );
+    add_action( 'admin_menu', [ $this, 'csnx_create_tools_page' ] );
+    add_action( 'wp_before_admin_bar_render', [ $this, 'csnx_tweaked_admin_bar' ] ); 
+    add_filter( 'post_row_actions', [ $this, 'csnx_modify_list_row_actions' ], 10, 2 );
+    add_filter( 'page_row_actions', [ $this, 'csnx_modify_list_row_actions' ], 10 ,2 );
+    add_action( 'add_meta_boxes', [ $this, 'csnx_register_metabox' ] );
+    add_action( 'wp_ajax_delete_entire_cache', [ $this, 'csnx_delete_entire_cache' ] );
+    add_action( 'wp_ajax_delete_current_page_cache', [ $this, 'csnx_delete_current_page_cache' ] );
+    add_action( 'save_post', [ $this, 'csnx_delete_current_page_cache_on_update' ] );
   } 
 
   public function get_plugin_name() {
@@ -48,14 +48,14 @@ class Nginx_Cache_Sniper {
   /**
    * Load javascript.
    */
-  public function load_cache_actions_js() {
+  public function csnx_load_actions_js() {
     wp_enqueue_script( $this->get_plugin_name() . "_cache_actions", plugins_url( $this->get_plugin_name() . "/js/cache_actions.js" ), [], time(), true ); 
   }
 
   /**
    * Register plugin's settings.
    */
-  public function register_nginx_cache_sniper_settings() {
+  public function csnx_register_settings() {
     register_setting( $this->get_plugin_name(), $this->get_cache_path_setting(), 'sanitize_text_field' );
     register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_update_setting(), 'absint' );
   }
@@ -63,14 +63,14 @@ class Nginx_Cache_Sniper {
   /**
    * Add tools page.
    */
-  public function create_tools_page() {
-    add_management_page( Render_Helper::PLUGIN_NAME, Render_Helper::PLUGIN_NAME, 'manage_options', $this->get_plugin_name(), [ $this, 'build_form' ] );
+  public function csnx_create_tools_page() {
+    add_management_page( Render_Helper::PLUGIN_NAME, Render_Helper::PLUGIN_NAME, 'manage_options', $this->get_plugin_name(), [ $this, 'csnx_build_form' ] );
   }
 
   /**
    * Build the form on the tools page.
    */
-  function build_form() {
+  public function csnx_build_form() {
     $render = Render_Helper::get_instance();
     $render->settings_form();
   }
@@ -78,7 +78,7 @@ class Nginx_Cache_Sniper {
   /**
    * Add menu to the admin toolbar.
    */
-  function nginx_cache_sniper_tweaked_admin_bar() {
+  function csnx_tweaked_admin_bar() {
     $render = Render_Helper::get_instance();
     $render->admin_bar();
   }
@@ -86,11 +86,11 @@ class Nginx_Cache_Sniper {
   /**
    * Register metabox.
    */
-  public function nginx_cache_sniper_register_metabox() {
+  public function csnx_register_metabox() {
     add_meta_box(
       'nginx_cache_sniper_metabox',
       Render_Helper::PLUGIN_NAME,
-      [ $this, 'nginx_cache_sniper_render_metabox' ],
+      [ $this, 'csnx_render_metabox' ],
       ['post', 'page'],
       'side',
       'low'
@@ -100,7 +100,7 @@ class Nginx_Cache_Sniper {
   /**
    * Render metabox.
    */
-  public function nginx_cache_sniper_render_metabox( $post ) {
+  public function csnx_render_metabox( $post ) {
     $render = Render_Helper::get_instance();
     echo '<p>' . $render->delete_current_page( $post )  . '</p>';
   }
@@ -108,7 +108,7 @@ class Nginx_Cache_Sniper {
   /**
    * Add an action to the list of posts and pages.
    */
-  public function modify_list_row_actions( $actions, $post ) {
+  public function csnx_modify_list_row_actions( $actions, $post ) {
     $render = Render_Helper::get_instance();
     $actions = array_merge( $actions, [
       'cache_purge' => $render->delete_current_page( $post )
@@ -119,7 +119,7 @@ class Nginx_Cache_Sniper {
   /**
    * Delete entire cache.
    */
-  public function delete_entire_cache() { 
+  public function csnx_delete_entire_cache() { 
     $path = get_option( $this->get_cache_path_setting() );
     $filesystem = Filesystem_Helper::get_instance();
     $cache_deleted = $filesystem->delete( $path, true );
@@ -129,7 +129,7 @@ class Nginx_Cache_Sniper {
   /**
    * Delete current page cache.
    */
-  public function delete_current_page_cache() {
+  public function csnx_delete_current_page_cache() {
     if ( isset($_GET["post"]) ) {
       $permalink = get_permalink( $_GET['post'] );
     } else {
@@ -145,7 +145,7 @@ class Nginx_Cache_Sniper {
   /**
    * Delete cache on page/post update.
    */
-  public function delete_current_page_cache_on_update( $post_id ) {
+  public function csnx_delete_current_page_cache_on_update( $post_id ) {
     // If this is just a revision, don't clear cache.
     if ( wp_is_post_revision( $post_id ) )
       return;
