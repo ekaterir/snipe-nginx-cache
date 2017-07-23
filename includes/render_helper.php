@@ -1,6 +1,6 @@
 <?php
 
-class Render_Helper {
+class CSNX_Render_Helper {
 
   const PLUGIN_NAME = 'Nginx Cache Sniper';
   const CLEAR_ENTIRE_CACHE = 'Clear entire cache';
@@ -9,13 +9,13 @@ class Render_Helper {
   const PAGE_CACHE_CLEARED = 'Cache cleared';
  
   /**
-   * Render_Helper $render
+   * CSNX_Render_Helper $render
    */ 
   private static $render = null;
  
   /**
    * Get instance.
-   * @return Render_Helper $render
+   * @return CSNX_Render_Helper $render
    */
   public static function get_instance() {
     if ( self::$render == null ) {
@@ -31,7 +31,7 @@ class Render_Helper {
    * Render text for the current page cache clearing.
    */
   public function delete_current_page( $post ) {
-    $filesystem = Filesystem_Helper::get_instance();
+    $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_zone_path = get_option( 'nginx_cache_sniper_path' );
     $permalink = get_permalink( $post );
     $cache_path = $filesystem->get_nginx_cache_path( $cache_zone_path, $permalink );
@@ -48,7 +48,7 @@ class Render_Helper {
     global $wp_admin_bar;
     $title = '';
     $id = '';
-    $filesystem = Filesystem_Helper::get_instance();
+    $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_path = $filesystem->get_nginx_cache_path( get_option( 'nginx_cache_sniper_path' ), '' );
     if ( $filesystem->is_valid_path( $cache_path ) ) {
       $title = self::CLEAR_ENTIRE_CACHE;

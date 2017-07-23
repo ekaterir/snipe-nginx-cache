@@ -64,14 +64,14 @@ class Cache_Sniper_Nginx {
    * Add tools page.
    */
   public function csnx_create_tools_page() {
-    add_management_page( Render_Helper::PLUGIN_NAME, Render_Helper::PLUGIN_NAME, 'manage_options', $this->get_plugin_name(), [ $this, 'csnx_build_form' ] );
+    add_management_page( CSNX_Render_Helper::PLUGIN_NAME, CSNX_Render_Helper::PLUGIN_NAME, 'manage_options', $this->get_plugin_name(), [ $this, 'csnx_build_form' ] );
   }
 
   /**
    * Build the form on the tools page.
    */
   public function csnx_build_form() {
-    $render = Render_Helper::get_instance();
+    $render = CSNX_Render_Helper::get_instance();
     $render->settings_form();
   }
 
@@ -79,7 +79,7 @@ class Cache_Sniper_Nginx {
    * Add menu to the admin toolbar.
    */
   function csnx_tweaked_admin_bar() {
-    $render = Render_Helper::get_instance();
+    $render = CSNX_Render_Helper::get_instance();
     $render->admin_bar();
   }
 
@@ -89,7 +89,7 @@ class Cache_Sniper_Nginx {
   public function csnx_register_metabox() {
     add_meta_box(
       'nginx_cache_sniper_metabox',
-      Render_Helper::PLUGIN_NAME,
+      CSNX_Render_Helper::PLUGIN_NAME,
       [ $this, 'csnx_render_metabox' ],
       ['post', 'page'],
       'side',
@@ -101,7 +101,7 @@ class Cache_Sniper_Nginx {
    * Render metabox.
    */
   public function csnx_render_metabox( $post ) {
-    $render = Render_Helper::get_instance();
+    $render = CSNX_Render_Helper::get_instance();
     echo '<p>' . $render->delete_current_page( $post )  . '</p>';
   }
 
@@ -109,7 +109,7 @@ class Cache_Sniper_Nginx {
    * Add an action to the list of posts and pages.
    */
   public function csnx_modify_list_row_actions( $actions, $post ) {
-    $render = Render_Helper::get_instance();
+    $render = CSNX_Render_Helper::get_instance();
     $actions = array_merge( $actions, [
       'cache_purge' => $render->delete_current_page( $post )
     ]); 
@@ -121,7 +121,7 @@ class Cache_Sniper_Nginx {
    */
   public function csnx_delete_entire_cache() { 
     $path = get_option( $this->get_cache_path_setting() );
-    $filesystem = Filesystem_Helper::get_instance();
+    $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_deleted = $filesystem->delete( $path, true );
     die(json_encode([$cache_deleted]));
   }
@@ -136,7 +136,7 @@ class Cache_Sniper_Nginx {
       die(json_encode(['error' => 'Page/post was not supplied']));
     }
     $path = get_option( $this->get_cache_path_setting() );
-    $filesystem = Filesystem_Helper::get_instance();
+    $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
     $directory_deleted = $filesystem->delete( $cache_path );
     die(json_encode([$directory_deleted]));
@@ -155,7 +155,7 @@ class Cache_Sniper_Nginx {
 
     $permalink = get_permalink( $post_id );
     $path = get_option( $this->get_cache_path_setting() );
-    $filesystem = Filesystem_Helper::get_instance();
+    $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
     $filesystem->delete( $cache_path );
   }

@@ -1,15 +1,15 @@
 <?php
 
-class Filesystem_Helper {
+class CSNX_Filesystem_Helper {
  
   /**
-   * Filesystem_Helper $filesystem
+   * CSNX_Filesystem_Helper $filesystem
    */ 
   private static $filesystem = null;
  
   /**
    * Get instance.
-   * @return Filesystem_Helper $filesystem
+   * @return CSNX_Filesystem_Helper $filesystem
    */ 
   public static function get_instance() {
     if ( self::$filesystem == null ) {
