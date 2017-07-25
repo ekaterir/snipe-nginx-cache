@@ -64,7 +64,7 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 
 == Screenshots ==
 
-1. cache-sniper-screenshot.png
+1. screenshot-1.png
 
 == Changelog ==
 
