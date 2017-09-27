@@ -2,21 +2,18 @@
 /**
  * Plugin Name: Cache Sniper for Nginx
  * Description: Purge the Nginx FastCGI Cache within WordPress on a global or per-page basis.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Thorn Technologies LLC
  * License: MIT
  */
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
-if ( is_admin() ) {
-  new Cache_Sniper_Nginx();
-}
+require_once plugin_dir_path( __FILE__ ) . 'includes/common_utils.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/cache-sniper-nginx-comments.php';
 
 class Cache_Sniper_Nginx {
 
-  private $plugin_name = 'cache-sniper-nginx';
-  private $cache_path_setting = 'nginx_cache_sniper_path';  
-  private $cache_clear_on_update_setting = 'nginx_cache_sniper_auto_clear';
+  use CSNX_Common_Utils;
 
   public function __construct() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/filesystem_helper.php'; 
@@ -33,18 +30,6 @@ class Cache_Sniper_Nginx {
     add_action( 'save_post', [ $this, 'csnx_delete_current_page_cache_on_update' ] );
   } 
 
-  public function get_plugin_name() {
-    return $this->plugin_name;
-  }
-  
-  public function get_cache_path_setting() {
-    return $this->cache_path_setting;
-  }
- 
-  public function get_cache_clear_on_update_setting() {
-    return $this->cache_clear_on_update_setting;
-  }
-
   /**
    * Load javascript.
    */
@@ -58,6 +43,7 @@ class Cache_Sniper_Nginx {
   public function csnx_register_settings() {
     register_setting( $this->get_plugin_name(), $this->get_cache_path_setting(), 'sanitize_text_field' );
     register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_update_setting(), 'absint' );
+    register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_comments_setting(), 'absint' );
   }
 
   /**
@@ -150,7 +136,7 @@ class Cache_Sniper_Nginx {
     if ( wp_is_post_revision( $post_id ) )
       return;
 
-    if ( get_option( $this->get_cache_clear_on_update_setting() ) != 1 )
+    if ( get_option( $this->get_cache_clear_on_update_setting() ) != 1)
       return;
 
     $permalink = get_permalink( $post_id );
@@ -159,5 +145,10 @@ class Cache_Sniper_Nginx {
     $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
     $filesystem->delete( $cache_path );
   }
-
 }
+
+if ( is_admin() ) {
+  new Cache_Sniper_Nginx();
+}
+new Cache_Sniper_Nginx_Comments();
+
