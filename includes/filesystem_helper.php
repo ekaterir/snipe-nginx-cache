@@ -30,6 +30,9 @@ class CSNX_Filesystem_Helper {
     if ( !is_dir( $path ) ) {
         $path = dirname($path);  
     }
+    if ( ! function_exists( 'request_filesystem_credentials' ) ) {
+      require_once ABSPATH . 'wp-admin/includes/file.php';
+    }
     ob_start();
     $credentials = request_filesystem_credentials( '', '', false, $path, null, true );
     $data = ob_get_clean();
