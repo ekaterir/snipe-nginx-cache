@@ -81,3 +81,6 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 == Upgrade Notice ==
 
 = 1.0 =
+
+= 1.0.1 =
+Adds page cache invalidation on comment create/update/delete.
