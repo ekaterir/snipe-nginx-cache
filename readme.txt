@@ -2,8 +2,8 @@
 Contributors: ekaterir, robertchen617, djrusk
 Tags: cache, caching, invalidation, nginx, aws, amazon web services, apache, nginx, purge, flush, server, fastcgi, php, fpm, php-fpm, snipe, individual, page, comments
 Requires at least: 4.6
-Tested up to: 4.8.2
-Stable tag: 1.0.1
+Tested up to: 4.9
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,9 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 
 == Changelog ==
 
+= 1.0.2 =
+* Fixed a bug that caused cache_actions.js file not to load.
+
 = 1.0.1 =
 * Added support for page cache invalidation on comment create/udpate/delete.
 
@@ -84,3 +87,6 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 
 = 1.0.1 =
 Adds page cache invalidation on comment create/update/delete.
+
+= 1.0.2 =
+Fixes a bug that caused cache_actions.js file not to load.
