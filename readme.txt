@@ -19,7 +19,7 @@ Nginx has a built-in FastCGI cache, which acts as a reverse proxy cache at the w
 * Configure pages to purge automatically when comments are created/updated/deleted.
 * Configure Settings via WP CLI
 
-For more info on using this plugin with a pre-configured Nginx stack running in AWS, follow this [link](https://www.thorntech.com/products/wpcloudstack).
+For more info on using this plugin with a pre-configured Nginx stack running in AWS, follow this [link](https://aws.amazon.com/marketplace/pp/B0771QTMR5).
 
 == Installation ==
 
