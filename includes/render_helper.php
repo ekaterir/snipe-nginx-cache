@@ -129,7 +129,7 @@ class CSNX_Render_Helper {
 
 	  </tbody>
         </table>
-        <p><i>For more info on using this plugin with a pre-configured Nginx stack running in AWS, follow this <a target='_blank' href='https://www.thorntech.com/products/wpcloudstack'>link</a>.</i></p>
+        <p><i>For more info on using this plugin with a pre-configured Nginx stack running in AWS, follow this <a target='_blank' href='https://aws.amazon.com/marketplace/pp/B0771QTMR5'>link</a>.</i></p>
 EOT;
     submit_button();
     echo '</form></div>'; 
