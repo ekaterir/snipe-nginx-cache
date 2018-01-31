@@ -95,25 +95,36 @@ class CSNX_Filesystem_Helper {
   /**
    * Make folders using the last char, and then the next two based on the hash.
    * @param string $cache_key
+   * @param string $levels
    * @return string 
    */
-  public function get_cache_zone_subfolders( $cache_key ) {
-    return substr($cache_key, -1) . '/' . substr($cache_key, -3, 2) . '/' . $cache_key;	
+  public function get_cache_zone_subfolders( $cache_key, $levels = '' ) {
+    $level_pieces = explode(':', $levels);
+    $subfolder_path = '';
+    $depth = 0;
+    if ( $levels !== '' ) {
+      foreach ($level_pieces as $value) {
+        $depth -= $value;
+        $subfolder_path .= substr($cache_key, $depth, $value) . '/';
+      }
+    }
+    return $subfolder_path . $cache_key;	
   }
 
   /**
    * Get complete path to the directory / file.
    * @param string $cache_zone_path
    * @param string $page_url
+   * @param string $levels
    * @return string
    */ 
-  public function get_nginx_cache_path( $cache_zone_path, $page_url = '' ) {
+  public function get_nginx_cache_path( $cache_zone_path, $page_url = '', $levels = '' ) {
     if ( ! $page_url ) {
       return $cache_zone_path;
     }
     $cache_zone_path = rtrim($cache_zone_path, '/') . '/';
     $cache_key = $this->get_cache_hash_key( $page_url ); 
-    return $cache_zone_path . $this->get_cache_zone_subfolders( $cache_key );
+    return $cache_zone_path . $this->get_cache_zone_subfolders( $cache_key, $levels );
   }
 }
 

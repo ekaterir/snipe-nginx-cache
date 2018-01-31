@@ -34,8 +34,9 @@ class Cache_Sniper_Nginx_Comments {
     
     $permalink = get_permalink( $post_id );
     $path = get_option( $this->get_cache_path_setting() );
+    $levels = get_option( $this->get_cache_levels_setting() );
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink, $levels );
     return $filesystem->delete( $cache_path );
   }
 

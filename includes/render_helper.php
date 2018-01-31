@@ -35,8 +35,9 @@ class CSNX_Render_Helper {
   public function delete_current_page( $post ) {
     $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_zone_path = get_option( $this->get_cache_path_setting() );
+    $cache_zone_levels = get_option( $this->get_cache_levels_setting() );
     $permalink = get_permalink( $post );
-    $cache_path = $filesystem->get_nginx_cache_path( $cache_zone_path, $permalink );
+    $cache_path = $filesystem->get_nginx_cache_path( $cache_zone_path, $permalink, $cache_zone_levels );
     if ( $filesystem->is_valid_path( $cache_path ) ) {
       return sprintf( '<a href="#" class="cache-purge-inline" id="%1$d">%2$s</a>', $post->ID, esc_html( __( self::CLEAR_PAGE_CACHE ) ) );
     }
@@ -51,7 +52,7 @@ class CSNX_Render_Helper {
     $title = '';
     $id = '';
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_path = $filesystem->get_nginx_cache_path( get_option( $this->get_cache_path_setting() ), '' );
+    $cache_path = $filesystem->get_nginx_cache_path( get_option( $this->get_cache_path_setting() ), '', get_option( $this->get_cache_levels_setting() ) );
     if ( $filesystem->is_valid_path( $cache_path ) ) {
       $title = self::CLEAR_ENTIRE_CACHE;
       $id = 'delete_entire_cache';
@@ -77,7 +78,9 @@ class CSNX_Render_Helper {
    */
   public function settings_form() {
     $cache_path_setting = $this->get_cache_path_setting();
+    $cache_levels_setting = $this->get_cache_levels_setting();
     $cache_path_value = esc_attr( get_option( $cache_path_setting ));
+    $cache_levels_value = esc_attr( get_option( $cache_levels_setting ));
     
     $cache_clear_on_update_setting = $this->get_cache_clear_on_update_setting();
     $cache_clear_on_update_checked_attr = checked( get_option( $cache_clear_on_update_setting ), 1, false);
@@ -100,8 +103,18 @@ class CSNX_Render_Helper {
 	        Cache Path
 	      </th>
 	      <td>
-	        <input type="text" class="regular-text code" name="$cache_path_setting" placeholder="/data/nginx/cache" value="$cache_path_value" />
+	        <input type="text" class="regular-text code" name="$cache_path_setting" placeholder="For example: /var/lib/nginx/cache" value="$cache_path_value" />
 	        <p class="description">The absolute path to the location of the cache zone, specified in the Nginx <code>fastcgi_cache_path</code>.</p>
+	      </td>
+	    </tr>
+
+	    <tr>
+	      <th scope="row">
+	         Cache Levels
+	      </th>
+	      <td>
+	        <input type="text" class="regular-text code" name="$cache_levels_setting" placeholder="For example: 1:2" value="$cache_levels_value" />
+	        <p class="description">Sets up a directory hierarchy under the cache path, specified in the Nginx <code>fastcgi_cache_path</code> levels.</p>
 	      </td>
 	    </tr>
 
