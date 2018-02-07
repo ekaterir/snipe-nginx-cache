@@ -102,7 +102,7 @@ class CSNX_Filesystem_Helper {
     $level_pieces = explode(':', $levels);
     $subfolder_path = '';
     $depth = 0;
-    if ( $levels !== '' ) {
+    if ( !is_null( $levels ) && !empty($levels) && $levels !== '' ) {
       foreach ($level_pieces as $value) {
         $depth -= $value;
         $subfolder_path .= substr($cache_key, $depth, $value) . '/';

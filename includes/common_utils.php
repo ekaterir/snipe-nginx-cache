@@ -33,5 +33,12 @@ trait CSNX_Common_Utils {
     return $this->cache_clear_on_update_setting;
   }
 
+  public function get_option_cache_levels() {
+    return get_option( $this->get_cache_levels_setting(), '1:2' );
+  }
+
+  public function get_option_cache_path() {
+    return get_option( $this->get_cache_path_setting(), '/var/lib/nginx/cache' );
+  }
 }
 

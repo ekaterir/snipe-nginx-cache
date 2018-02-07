@@ -34,8 +34,8 @@ class CSNX_Render_Helper {
    */
   public function delete_current_page( $post ) {
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_zone_path = get_option( $this->get_cache_path_setting() );
-    $cache_zone_levels = get_option( $this->get_cache_levels_setting() );
+    $cache_zone_path = $this->get_option_cache_path();
+    $cache_zone_levels = $this->get_option_cache_levels();
     $permalink = get_permalink( $post );
     $cache_path = $filesystem->get_nginx_cache_path( $cache_zone_path, $permalink, $cache_zone_levels );
     if ( $filesystem->is_valid_path( $cache_path ) ) {
@@ -52,7 +52,7 @@ class CSNX_Render_Helper {
     $title = '';
     $id = '';
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_path = $filesystem->get_nginx_cache_path( get_option( $this->get_cache_path_setting() ), '', get_option( $this->get_cache_levels_setting() ) );
+    $cache_path = $filesystem->get_nginx_cache_path( $this->get_option_cache_path(), '', $this->get_option_cache_levels() );
     if ( $filesystem->is_valid_path( $cache_path ) ) {
       $title = self::CLEAR_ENTIRE_CACHE;
       $id = 'delete_entire_cache';
@@ -79,8 +79,8 @@ class CSNX_Render_Helper {
   public function settings_form() {
     $cache_path_setting = $this->get_cache_path_setting();
     $cache_levels_setting = $this->get_cache_levels_setting();
-    $cache_path_value = esc_attr( get_option( $cache_path_setting ));
-    $cache_levels_value = esc_attr( get_option( $cache_levels_setting ));
+    $cache_path_value = esc_attr( $this->get_option_cache_path() );
+    $cache_levels_value = esc_attr( $this->get_option_cache_levels() );
     
     $cache_clear_on_update_setting = $this->get_cache_clear_on_update_setting();
     $cache_clear_on_update_checked_attr = checked( get_option( $cache_clear_on_update_setting ), 1, false);
