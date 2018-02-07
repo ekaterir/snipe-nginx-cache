@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cache Sniper for Nginx
  * Description: Purge the Nginx FastCGI Cache within WordPress on a global or per-page basis.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: Thorn Technologies LLC
  * License: MIT
  */
@@ -42,8 +42,18 @@ class Cache_Sniper_Nginx {
    */
   public function csnx_register_settings() {
     register_setting( $this->get_plugin_name(), $this->get_cache_path_setting(), 'sanitize_text_field' );
+    register_setting( $this->get_plugin_name(), $this->get_cache_levels_setting(), [ $this, 'validate_levels' ] );
     register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_update_setting(), 'absint' );
     register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_comments_setting(), 'absint' );
+  }
+
+  public function validate_levels($data) {
+    $pattern = '/^((1|2)(:(1|2)){0,2})?$/';
+    if (preg_match($pattern, $data)) {
+      return $data;
+    } else {
+      wp_die( 'Level format is invalid.' ); 
+    }
   }
 
   /**
@@ -106,7 +116,7 @@ class Cache_Sniper_Nginx {
    * Delete entire cache.
    */
   public function csnx_delete_entire_cache() { 
-    $path = get_option( $this->get_cache_path_setting() );
+    $path = $this->get_option_cache_path();
     $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_deleted = $filesystem->delete( $path, true );
     die(json_encode([$cache_deleted]));
@@ -121,9 +131,10 @@ class Cache_Sniper_Nginx {
     } else {
       die(json_encode(['error' => 'Page/post was not supplied']));
     }
-    $path = get_option( $this->get_cache_path_setting() );
+    $path = $this->get_option_cache_path();
+    $levels = $this->get_option_cache_levels();
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink, $levels );
     $directory_deleted = $filesystem->delete( $cache_path );
     die(json_encode([$directory_deleted]));
   }
@@ -140,9 +151,10 @@ class Cache_Sniper_Nginx {
       return;
 
     $permalink = get_permalink( $post_id );
-    $path = get_option( $this->get_cache_path_setting() );
+    $path = $this->get_option_cache_path();
+    $levels = $this->get_option_cache_levels();
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink );
+    $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink, $levels );
     $filesystem->delete( $cache_path );
   }
 }

@@ -4,6 +4,7 @@ trait CSNX_Common_Utils {
 
   private $cache_clear_on_comments_setting = 'nginx_cache_sniper_auto_clear_comments'; 
   private $cache_path_setting = 'nginx_cache_sniper_path';  
+  private $cache_levels = 'nginx_cache_sniper_levels';  
   private $plugin_name = 'cache-sniper-nginx';
   private $cache_clear_on_update_setting = 'nginx_cache_sniper_auto_clear';
   private $plugin_url = 'snipe-nginx-cache';
@@ -14,6 +15,10 @@ trait CSNX_Common_Utils {
 
   public function get_cache_path_setting() {
     return $this->cache_path_setting;
+  }
+  
+  public function get_cache_levels_setting() {
+    return $this->cache_levels;
   }
   
   public function get_plugin_name() {
@@ -28,5 +33,12 @@ trait CSNX_Common_Utils {
     return $this->cache_clear_on_update_setting;
   }
 
+  public function get_option_cache_levels() {
+    return get_option( $this->get_cache_levels_setting(), '1:2' );
+  }
+
+  public function get_option_cache_path() {
+    return get_option( $this->get_cache_path_setting(), '/var/lib/nginx/cache' );
+  }
 }
 

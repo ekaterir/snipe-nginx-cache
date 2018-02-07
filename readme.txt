@@ -3,7 +3,7 @@ Contributors: ekaterir, robertchen617, djrusk
 Tags: cache, caching, invalidation, nginx, aws, amazon web services, apache, nginx, purge, flush, server, fastcgi, php, fpm, php-fpm, snipe, individual, page, comments
 Requires at least: 4.6
 Tested up to: 4.9
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,7 +23,7 @@ For more info on using this plugin with a pre-configured Nginx stack running in 
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/cache-sniper-nginx` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/snipe-nginx-cache` directory, or install the plugin through the WordPress plugins screen directly.
 1. Activate the plugin through the **Plugins** screen in WordPress
 1. Go to **Tools** -> **Nginx Cache Sniper** to configure the plugin
 
@@ -39,6 +39,7 @@ For more info on using this plugin with a pre-configured Nginx stack running in 
 Cache Sniper for Nginx comes with the following settings:
 
 1. **Cache Path**: This is the filesystem path where the FastCGI cache is stored on-disk. Set this to the value you used for `fastcgi_cache_path` from your Nginx configuration. **Note**: Nginx needs read/write access to this location.
+1. **Cache Levels**: This sets up a directory hierarchy under the cache path. Set this to the value you used for `levels` from your Nginx configuration. For example: `fastcgi_cache_path /var/lib/nginx/cache levels=1:2 keys_zone=CACHE:100m;`
 1. **Automatically clear page cache on content update**: Check this box to automatically purge the cache when a page is updated. This only purges the updated page -- it does not clear the entire cache.
 1. **Automatically clear page cache on comment**: Check this box to automatically purge the cache when a comment is created/updated/deleted. This only purges the cache of the page where the comment resides -- it does not clear the entire cache.
 
@@ -48,6 +49,7 @@ For those scripting out infrastructure, Cache Sniper for Nginx can be configured
 
 1. `wp plugin activate cache-sniper-nginx`
 1. `wp option add nginx_cache_sniper_path '/var/lib/nginx/cache'`
+1. `wp option add nginx_cache_sniper_levels '1:2'`
 1. `wp option add nginx_cache_sniper_auto_clear 1`
 1. `wp option add nginx_cache_sniper_auto_clear_comments 1`
 
@@ -57,7 +59,7 @@ For instructions on setting up FastCGI caching with Nginx, refer to this [Digita
 
 There are a few things that need to be configured on the server in order for this plugin to work.
 
-1. Be sure to set `levels=1:2` for `fastcgi_cache_path`. For example: `fastcgi_cache_path /var/lib/nginx/cache levels=1:2 keys_zone=CACHE:100m;`
+1. Be sure to set `$scheme$request_method$host$request_uri` for `fastcgi_cache_key`. For example: `fastcgi_cache_key  "$scheme$request_method$host$request_uri";`
 1. The Linux account running Nginx needs read-write permissions to the cache path on disk.
 
 == Frequently Asked Questions ==
@@ -71,6 +73,9 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 1. screenshot-1.png
 
 == Changelog ==
+
+= 1.0.3 =
+* Added cache levels configuration.
 
 = 1.0.2 =
 * Fixed a bug that caused cache_actions.js file not to load.
@@ -90,3 +95,6 @@ Adds page cache invalidation on comment create/update/delete.
 
 = 1.0.2 =
 Fixes a bug that caused cache_actions.js file not to load.
+
+= 1.0.3 =
+Adds cache levels configuration.
