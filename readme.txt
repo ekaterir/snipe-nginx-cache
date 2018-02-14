@@ -2,8 +2,8 @@
 Contributors: ekaterir, robertchen617, djrusk
 Tags: cache, caching, invalidation, nginx, aws, amazon web services, apache, nginx, purge, flush, server, fastcgi, php, fpm, php-fpm, snipe, individual, page, comments
 Requires at least: 4.6
-Tested up to: 4.9
-Stable tag: 1.0.3
+Tested up to: 4.9.4
+Stable tag: 1.0.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 
 == Changelog ==
 
+= 1.0.3.1 =
+* Clearing entire cache removes contents of the fastcgi_cache_path folder without deleting the folder itself.
+
 = 1.0.3 =
 * Added cache levels configuration.
 
@@ -98,3 +101,6 @@ Fixes a bug that caused cache_actions.js file not to load.
 
 = 1.0.3 =
 Adds cache levels configuration.
+
+= 1.0.3.1 =
+Clearing entire cache removes contents of the fastcgi_cache_path folder without deleting the folder itself.
