@@ -49,7 +49,6 @@ class CSNX_Filesystem_Helper {
    */
   public function is_valid_path( $path ) {
     global $wp_filesystem;
-
     if ( !$path ) {
 	return false;
     }
@@ -61,6 +60,21 @@ class CSNX_Filesystem_Helper {
 	     return false;
 	}
 	return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check if directory is empty.
+   * @param string $path
+   * @return bool
+   */
+  public function is_dir_empty( $path ) {
+    if ($this->is_valid_path( $path ) ) {
+      global $wp_filesystem;
+      $filelist = $wp_filesystem->dirlist( $path, true );
+      if ( is_array( $filelist ) && count( $filelist ) == 0 )
+        return true;
     }
     return false;
   }
@@ -78,9 +92,32 @@ class CSNX_Filesystem_Helper {
     if ( $this->is_valid_path( $path ) )
         return $wp_filesystem->rmdir( $path, $recursive );
     return false;
-    
   }  
- 
+
+  /**
+   * Delete all files and folders in a directory but not the directory itself.
+   * @param string $path
+   * @return bool
+   */ 
+  public function delete_sub_directories( $path ) {
+    if ( empty( $path ) )
+      return false;
+    $path = str_replace( '\\', '/', $path );
+    $path = trailingslashit( $path );
+    if ( $this->is_valid_path( $path ) ) {
+      global $wp_filesystem; 
+      $filelist = $wp_filesystem->dirlist( $path, true );    
+      if ( is_array( $filelist ) ) {
+        foreach ( $filelist as $filename => $fileinfo ) { 
+          if ( ! $wp_filesystem->delete( $path . $filename, true, $fileinfo['type'] ) )
+              return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   /**
    * Get cache hash key for a page url.
    * fastcgi_cache_key  "$scheme$request_method$host$request_uri"
