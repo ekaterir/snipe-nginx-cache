@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cache Sniper for Nginx
  * Description: Purge the Nginx FastCGI Cache within WordPress on a global or per-page basis.
- * Version: 1.0.3
+ * Version: 1.0.3.1
  * Author: Thorn Technologies LLC
  * License: MIT
  */
@@ -47,6 +47,10 @@ class Cache_Sniper_Nginx {
     register_setting( $this->get_plugin_name(), $this->get_cache_clear_on_comments_setting(), 'absint' );
   }
 
+  /**
+   * Make sure that levels field is formatted right.
+   * @param string $data
+   */
   public function validate_levels($data) {
     $pattern = '/^((1|2)(:(1|2)){0,2})?$/';
     if (preg_match($pattern, $data)) {
@@ -118,7 +122,7 @@ class Cache_Sniper_Nginx {
   public function csnx_delete_entire_cache() { 
     $path = $this->get_option_cache_path();
     $filesystem = CSNX_Filesystem_Helper::get_instance();
-    $cache_deleted = $filesystem->delete( $path, true );
+    $cache_deleted = $filesystem->delete_sub_directories( $path );
     die(json_encode([$cache_deleted]));
   }
 

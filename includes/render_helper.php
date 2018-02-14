@@ -53,7 +53,7 @@ class CSNX_Render_Helper {
     $id = '';
     $filesystem = CSNX_Filesystem_Helper::get_instance();
     $cache_path = $filesystem->get_nginx_cache_path( $this->get_option_cache_path(), '', $this->get_option_cache_levels() );
-    if ( $filesystem->is_valid_path( $cache_path ) ) {
+    if ( ! $filesystem->is_dir_empty( $cache_path ) ) {
       $title = self::CLEAR_ENTIRE_CACHE;
       $id = 'delete_entire_cache';
     } else {
