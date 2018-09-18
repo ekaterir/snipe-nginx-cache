@@ -9,18 +9,36 @@ function delete_current_page(e) {
 		cache: false,
 		success: function(data){
 		    if ( data[0] === true ) {
-			e.target.outerHTML = '<span>Cache Sniped</span>';
+					e.target.outerHTML = '<span>Cache Sniped</span>';
 		    }
 		}
-	}); 
+	});
 }
 
 function delete_entire_cache(e) {
 	var id = (typeof e.target.id != "undefined" && e.target.id) ? e.target.id : jQuery(e.target).parent("li").attr("id");
 	var action = '';
 
-	if(id == 'wp-admin-bar-delete_entire_cache'){
+	if (id == 'wp-admin-bar-delete_entire_cache') {
 		action = 'delete_entire_cache';
+		successFunction = function(data) {
+			if (data[0] == true) {
+				e.target.innerHTML = 'Entire cache was cleared';
+				jQuery('#the-list a.cache-purge-inline').each(function(){
+					jQuery(this).context.outerHTML = '<span>Cache cleared</span>';
+				});
+				jQuery('#wp-admin-bar-delete_homepage_cache > div').text('Homepage cache cleared');
+			}
+		}
+	}
+
+	if (id == 'wp-admin-bar-delete_homepage_cache') {
+		action = 'delete_homepage_cache';
+		successFunction = function(data) {
+			if (data[0] == true) {
+				e.target.innerHTML = 'Homepage cache cleared';
+			}
+		}
 	}
 
 	if (action !== '') {
@@ -30,26 +48,19 @@ function delete_entire_cache(e) {
 			data : {"action": action},
 			dataType : "json",
 			cache: false,
-			success: function(data){
-			    if (data[0] == true) {
-				e.target.innerHTML = 'Entire cache was cleared';
-				jQuery('#the-list a.cache-purge-inline').each(function(){
-				    jQuery(this).context.outerHTML = '<span>Entire cache cleared</span>';
-				});
-			   }
-			}
+			success: successFunction
 		});
 	}
 }
 
-        jQuery( document ).ready(function() {
-		jQuery('#the-list').on( 'click', 'a.cache-purge-inline', function (e) {
-			delete_current_page( e )
-		});
-		jQuery('#nginx_cache_sniper_metabox').on( 'click', 'a.cache-purge-inline', function( e ) {
-			delete_current_page( e )
-                });
-                jQuery("#wp-admin-bar-fastcgi_cache li").click(function(e){
-			delete_entire_cache( e )
-                });
-        });
+jQuery( document ).ready(function() {
+	jQuery('#the-list').on( 'click', 'a.cache-purge-inline', function (e) {
+		delete_current_page( e )
+	});
+	jQuery('#nginx_cache_sniper_metabox').on( 'click', 'a.cache-purge-inline', function( e ) {
+		delete_current_page( e )
+	});
+	jQuery("#wp-admin-bar-fastcgi_cache li").click(function(e){
+		delete_entire_cache( e )
+	});
+});
