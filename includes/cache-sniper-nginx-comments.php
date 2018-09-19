@@ -12,7 +12,7 @@ class Cache_Sniper_Nginx_Comments {
   public function __construct() {
     require_once plugin_dir_path( __FILE__ ) . 'filesystem_helper.php';
     add_action( 'comment_post', [ $this, 'csnx_delete_current_page_cache_on_comments' ] );
-    add_action( 'wp_insert_comment', [ $this, 'csnx_delete_current_page_cache_on_wp_insert_comment' ] );
+    add_action( 'wp_insert_comment', [ $this, 'csnx_delete_current_page_cache_on_comments' ] );
     add_action( 'edit_comment', [ $this, 'csnx_delete_current_page_cache_on_comments' ] );
     add_action( 'delete_comment', [ $this, 'csnx_delete_current_page_cache_on_comments' ] );
     add_action( 'trackback_post', [ $this, 'csnx_delete_current_page_cache_on_comments' ] );
@@ -30,8 +30,9 @@ class Cache_Sniper_Nginx_Comments {
     }
 
     if ( get_option( $this->get_cache_clear_on_comments_setting() ) == 1) {
-      if ( !is_object( $comment ) )
+      if ( !is_object( $comment ) ) {
         $comment = get_comment( $comment );
+      }
 
       $post_id = $comment->comment_post_ID;
 
@@ -42,13 +43,6 @@ class Cache_Sniper_Nginx_Comments {
       $cache_path = $filesystem->get_nginx_cache_path( $path, $permalink, $levels );
       return $filesystem->delete( $cache_path );
     }
-  }
-
-  /**
-   * Delete cache when comments are added programatically
-   */
-  public function csnx_delete_current_page_cache_on_wp_insert_comment( $id, $comment) {
-    $this->csnx_delete_current_page_cache_on_comments( $comment );
   }
 
   /**
