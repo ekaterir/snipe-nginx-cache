@@ -3,7 +3,7 @@ Contributors: ekaterir, robertchen617, djrusk
 Tags: cache, caching, invalidation, nginx, aws, amazon web services, apache, nginx, purge, flush, server, fastcgi, php, fpm, php-fpm, snipe, home, individual, homepage, comments
 Requires at least: 4.6
 Tested up to: 4.9.8
-Stable tag: 1.0.4
+Stable tag: 1.0.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,9 @@ No. Cache Sniper for Nginx works without relying on any custom Nginx modules. Th
 
 == Changelog ==
 
+= 1.0.4.1 =
+* Fixed a bug that caused wp_insert_comment to fail.
+
 = 1.0.4 =
 * Automatically clearing the homepage cache on content create/update/delete.
 * Manually clearing the homepage cache from the admin menu bar.
@@ -118,3 +121,6 @@ Clearing entire cache removes contents of the fastcgi_cache_path folder without 
 
 = 1.0.4 =
 Adds ability to clear homepage cache.
+
+= 1.0.4.1 =
+Fixes a bug that caused wp_insert_comment to fail.
