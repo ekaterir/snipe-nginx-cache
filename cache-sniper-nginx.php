@@ -177,7 +177,7 @@ class Cache_Sniper_Nginx {
   /**
    * Delete cache on page/post create/update/delete.
    */
-  public function csnx_delete_current_page_cache_on_update( $post_id, $post, $update ) {
+  public function csnx_delete_current_page_cache_on_update( $post_id, $post = null, $update = true ) {
     // If this is just a revision, don't clear cache.
     if ( wp_is_post_revision( $post_id ) )
       return;
